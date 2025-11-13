@@ -1,0 +1,39 @@
+{
+    "id": "d504a37f-25a3-4cd6-8120-ce07309cc755",
+    "author": "",
+    "widgets": [
+        {
+            "id": "Alerts",
+            "name": "Alerts",
+            "description": "A sample widget",
+            "icon": "",
+            "tags":[]
+            "category":"",
+            "isTemplate": true/false // this will mark the widget as a template 
+        }
+    ],
+    "sidebarLinks": [
+        {
+            "id": "AlertsLink",
+            "label": "",
+            "description": "",
+            "target": "",
+            "icon": "",
+            "roles":[]
+        }
+    ],
+    "uis": [
+        {
+            "id": "AlertsLink",
+            "label":"",
+            "description": "",
+            "roles": []
+        }
+    ],
+    "menuItems": [
+        {
+            "id": "AlertsLink",
+            "title": "Alerts"
+        }
+    ]
+}

@@ -1,0 +1,24 @@
+{
+    "id": "8360c445-7e4c-43d7-87f1-266de6da114d",
+    "author": "",
+    "widgets": [
+        {
+            "id": "Alerts",
+            "name": "Alerts",
+            "description": "A sample widget",
+            "icon": "",
+            "tags":[],
+            "category":"",
+            "isTemplate": false
+        }
+    ],
+    "sidebarLinks": [
+        
+    ],
+    "uis": [
+       
+    ],
+    "menuItems": [
+        
+    ]
+}

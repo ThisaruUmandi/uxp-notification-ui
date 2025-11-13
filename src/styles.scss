@@ -1,0 +1,381 @@
+// Notification Icon Button
+.notification-icon-btn {
+    position: relative;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: all 0.1s ease;
+
+
+    i {
+        font-size: 16px;
+        color: #000000;
+        
+    }
+}
+
+// To remove the triangle part of the DropDownButton Widget
+.uxp-dropdown-button,
+.uxp-dropdown,
+[class*="dropdown"] {
+    &::after,
+    &::before {
+        display: none;
+        content: none;
+        visibility: hidden;
+    }
+}
+
+.notification-count {
+    position: absolute;
+    top: 1px;
+    right: 3px;
+    background: #dc3545;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 4px;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+// Dropdown Content
+.dropdownbtn-content {
+    height: 500px;
+    min-height: 500px;
+    max-height: 500px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px #000000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdownbtn-header {
+    background: #ffffff;
+    border-bottom: none;
+    flex-shrink: 0;
+    min-height: 0;
+    height: auto;
+}
+
+.dropdown-actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    flex-shrink: 0;
+    min-height: 0;
+}
+
+.header-title {
+    font-size: 16px;    
+    color: #000000;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+
+    button {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        color: #000000;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+
+        &:hover {
+            background: #f1f3f5;
+            color: #000000;
+        }
+
+        i {
+            font-size: 16px;
+        }
+    }
+}
+
+.no-alerts {
+    text-align: center;
+    padding: 80px 20px;
+    color: #9ca3af;
+    font-size: 14px;
+    
+    i {
+        font-size: 48px;
+        margin-bottom: 12px;
+        opacity: 0.4;
+        display: block;
+    }
+}
+
+// Alert Item
+.notification-alert-item {
+    display: block;
+    padding: 12px;
+    padding-left: 16px;
+    margin-bottom: 16px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    position: relative;
+
+    
+    // LEFT BORDER
+    &.critical {
+        border-left: 4px solid #ef4444;
+    }
+
+    &.high {
+        border-left: 4px solid #f59e0b;
+    }
+
+    &.medium {
+        border-left: 4px solid #3b82f6;
+    }
+
+    &.low {
+        border-left: 4px solid #6b7280;
+    }
+
+    &:hover {
+        background: #f9fafb;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    &.resolved {
+        opacity: 0.7;
+        background: #f9fafb;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.alert-content {
+    width: 100%;
+}
+
+.alert-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.alert-title {
+    font-size: 12px;
+    color: #000000;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.severity-badge {
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    &.critical {
+        background: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    &.high {
+        background: #ffedd5;
+        color: #ea580c;
+        border: 1px solid #fed7aa;
+    }
+
+    &.medium {
+        background: #dbeafe;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+    }
+
+    &.low {
+        background: #f3f4f6;
+        color: #4b5563;
+        border: 1px solid #e5e7eb;
+    }
+}
+
+.alert-meta {
+    display: flex;
+    align-items: center;
+    gap: 180px;
+    margin-bottom: 4px;
+    font-size: 10px;
+}
+
+.alert-time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: #6b7280;
+
+    i {
+        font-size: 10px;
+    }
+}
+
+.resolved-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #10b981;
+    font-weight: 600;
+    font-size: 10px;
+
+    i {
+        font-size: 10px;
+    }
+}
+
+.alert-description {
+    font-size: 10px;
+    color: #5e5e5e;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.alert-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    margin-bottom: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-left: 0;
+    width: 100%;
+
+    button {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        width: auto;
+        margin: 0;
+
+        &.action-btn-primary {
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #d1d5db;
+            font-size: 11px;
+            font-weight: 500;
+
+            &:hover {
+                background: #f9fafb;
+                border-color: #9ca3af;
+            }
+
+            i {
+                font-size: 12px;
+            }
+        }
+
+        &.action-btn-secondary {
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #d1d5db;
+            font-size: 11px;
+            font-weight: 500;
+
+            &:hover {
+                background: #f9fafb;
+                border-color: #9ca3af;
+            }
+
+            i {
+                font-size: 12px;
+            }
+        }
+
+        &:nth-child(3) {
+            flex-wrap: wrap;
+        }
+    }
+}
+
+// Tab badge for counts
+.tab-badge {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    background: #dc3545;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 6px;
+}
+
+// Container for the entire tab component
+.tabs-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: calc(500px - 60px);
+    min-height: calc(500px - 60px);
+    max-height: calc(500px - 60px);
+    overflow: hidden;
+    flex: 1 1 auto;
+    border-radius: 10px;
+
+    > div {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 100%;
+        max-height: 100%;
+        overflow: hidden;
+    }
+
+    > div > div:first-child {
+        overflow-x: auto;
+        overflow-y: hidden;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        display: flex;
+        height: auto;
+        margin-bottom: 10px;
+    }
+    
+    > div > div:last-child {
+        flex: 1 1 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-height: 100%;
+
+        > div {
+            padding: 12px;
+        }
+    }
+}
