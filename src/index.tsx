@@ -208,7 +208,7 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
             label: (
                 <span>
                 {(() => {
-                    // First check if criteriaData has an icon
+                    
                     if (criteriaData?.categories) {
                         const criteriaCategory = criteriaData.categories.find((c: any) => c.name === category);
                         if (criteriaCategory?.icon) {
@@ -216,7 +216,7 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
                         }
                     }
                     
-                    // Fallback to predefined Font Awesome icons
+                    
                     const icons: { [key: string]: string } = {
                         'Fire Alarm': 'fas fa-fire', 
                         'Work Order': 'fas fa-wrench', 
