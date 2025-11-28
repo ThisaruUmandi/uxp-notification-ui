@@ -1,6 +1,6 @@
 import * as React from "react";
 import { registerWidget, IContextProvider } from './uxp';
-import { TitleBar, WidgetWrapper, DropDownButton, TabComponent, TabComponentStyles, useMessageBus } from "uxp/components";
+import { TitleBar, WidgetWrapper, DropDownButton, Button, TabComponent, TabComponentStyles, useMessageBus } from "uxp/components";
 import { IWDDesignModeProps } from "widget-designer/components";
 import './styles.scss';
 
@@ -48,8 +48,29 @@ const getCategoryIcon = (category: string, criteriaIcon?: string): string => {
         'HVAC': 'fas fa-snowflake',
         'notification': 'fas fa-info-circle',
     };
-    
+   
     return icons[category] || 'fas fa-info-circle';
+};
+
+// Manual mapping for known compound words
+const formatCategoryName = (category: string): string => {
+
+    const mapping: { [key: string]: string } = {
+        'firealarm': 'Fire Alarm',
+        'workorder': 'Work Order',
+        'elevator': 'Elevator',
+        'power': 'Power',
+        'security': 'Security',
+        'energy': 'Energy',
+        'HVAC': 'HVAC',
+        'notification': 'Notification',
+    };
+
+    if (mapping[category.toLowerCase()]) {
+        return mapping[category.toLowerCase()];
+    }
+
+    return category.charAt(0).toUpperCase() + category.slice(1);
 };
 
 const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
@@ -62,17 +83,19 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
     const [categoryDetailsLinks, setCategoryDetailsLinks] = React.useState<Map<string, string>>(new Map());
     const [alertObjectKeys, setAlertObjectKeys] = React.useState<Map<string, string>>(new Map());
 
-
+    
+    //listen to message bus
     useMessageBus(props.uxpContext, "iviva_notification_bridge_updates", (payload: any, channel: string) => {
         console.log("Received notification update via MessageBus:", payload, "on channel:", channel);
         loadData();
         return "updated";
     });
-
+    
+    //Pollin
     React.useEffect(() => {
         if (!props.uxpContext) return;
 
-        const POLLING_INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds
+        const POLLING_INTERVAL = 5 * 60 * 1000;
         
         const pollTimer = setInterval(() => {
             console.log("Background polling: Refreshing notifications");
@@ -84,6 +107,7 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
         };
     }, [props.uxpContext]);
 
+    
     async function GetCriteriaAndCount() {
         try {
             const res = await props.uxpContext.executeAction(
@@ -255,7 +279,7 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
             label: (
                 <span>
                     <i className={`${categoryIcon} category-icon`}></i>
-                    {' '}{category}
+                    {' '}{formatCategoryName(category)}
                     {categoryNewCount > 0 && <span className="tab-badge">{categoryNewCount}</span>}
                 </span>
             ),
@@ -370,7 +394,7 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
                                         <i className="fas fa-spinner fa-spin"></i>
                                         Loading notifications...
                                     </div>
-                                ) : categories.length > 0 ? (
+                                ) : categories.length > 1 ? (
                                     <TabComponent
                                         tabs={tabs}
                                         selected={selectedCategory}
