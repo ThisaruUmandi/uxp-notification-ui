@@ -36,6 +36,22 @@ const tabStyles: TabComponentStyles = {
     tabContentIconSize: '12px',
 };
 
+const getCategoryIcon = (category: string, criteriaIcon?: string): string => {
+
+    const icons: { [key: string]: string } = {
+        'firealarm': 'fas fa-fire',
+        'workorder': 'fas fa-wrench',
+        'elevator': 'fas fa-elevator',
+        'power': 'fas fa-bolt',
+        'security': 'fas fa-lock',
+        'energy': 'fas fa-battery-full',
+        'HVAC': 'fas fa-snowflake',
+        'notification': 'fas fa-info-circle',
+    };
+    
+    return icons[category] || 'fas fa-info-circle';
+};
+
 const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
     const [alerts, setAlerts] = React.useState<IAlert[]>([]);
     const [loading, setLoading] = React.useState(false);
@@ -149,10 +165,6 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
                     
                     let category = notif.category || notif.type || notif.categoryName || notif.alertType || notif.criteria;
                     
-                    if (!category || category === '') {
-                        category = 'General';
-                        console.warn(`Notification ${id} has no category, using 'General'`);
-                    }
                     
                     const message = notif.message || notif.description || notif.title || 'No message';
                     
@@ -228,19 +240,21 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
             .filter(a => a.category === category)
             .sort((a, b) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime());
         const categoryNewCount = categoryAlerts.filter(a => a.status === 'New').length;
-
-        let categoryIcon = 'fas fa-info-circle';
-        if (criteriaData?.categories) {
-            const criteriaCategory = criteriaData.categories.find((c: any) => c.name === category);
-            if (criteriaCategory?.icon) {
-                categoryIcon = criteriaCategory.icon;
+        
+        let criteriaIcon: string | undefined;
+            if (criteriaData?.categories) {
+                const criteriaCategory = criteriaData.categories.find((c: any) => c.name === category);
+                    if (criteriaCategory?.icon) {
+                        criteriaIcon = criteriaCategory.icon;
+                    }
             }
-        }
+        const categoryIcon = getCategoryIcon(category, criteriaIcon);
 
         return {
             id: category,
             label: (
                 <span>
+                    <i className={`${categoryIcon} category-icon`}></i>
                     {' '}{category}
                     {categoryNewCount > 0 && <span className="tab-badge">{categoryNewCount}</span>}
                 </span>
