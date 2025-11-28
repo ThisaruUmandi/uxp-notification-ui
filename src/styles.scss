@@ -54,14 +54,6 @@
     flex-direction: column;
 }
 
-.dropdownbtn-header {
-    background: #ffffff;
-    border-bottom: none;
-    flex-shrink: 0;
-    min-height: 0;
-    height: auto;
-}
-
 .dropdown-actions {
     width: 100%;
     display: flex;
@@ -119,11 +111,16 @@
 }
 
 // Alert Item
+.alerts-tab-content{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 .notification-alert-item {
     display: block;
     padding: 12px;
     padding-left: 16px;
-    margin-bottom: 16px;
+    //margin-bottom: 16px;
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 6px;
