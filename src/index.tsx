@@ -1,6 +1,6 @@
 import * as React from "react";
 import { registerWidget, IContextProvider } from './uxp';
-import { TitleBar, WidgetWrapper, DropDownButton, TabComponent, TabComponentStyles } from "uxp/components";
+import { TitleBar, WidgetWrapper, DropDownButton, TabComponent, TabComponentStyles, useMessageBus } from "uxp/components";
 import { IWDDesignModeProps } from "widget-designer/components";
 import './styles.scss';
 
@@ -45,6 +45,28 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
     const [criteriaData, setCriteriaData] = React.useState<any>(null);
     const [categoryDetailsLinks, setCategoryDetailsLinks] = React.useState<Map<string, string>>(new Map());
     const [alertObjectKeys, setAlertObjectKeys] = React.useState<Map<string, string>>(new Map());
+
+
+    useMessageBus(props.uxpContext, "iviva_notification_bridge_updates", (payload: any, channel: string) => {
+        console.log("Received notification update via MessageBus:", payload, "on channel:", channel);
+        loadData();
+        return "updated";
+    });
+
+    React.useEffect(() => {
+        if (!props.uxpContext) return;
+
+        const POLLING_INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds
+        
+        const pollTimer = setInterval(() => {
+            console.log("Background polling: Refreshing notifications");
+            loadData();
+        }, POLLING_INTERVAL);
+
+        return () => {
+            clearInterval(pollTimer);
+        };
+    }, [props.uxpContext]);
 
     async function GetCriteriaAndCount() {
         try {
@@ -117,14 +139,21 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
                     notificationArray = notificationsResponse.items;
                 }
 
-                console.log("Notification Array:", notificationArray);
+                console.log("Raw Notification Array:", notificationArray);
 
                 const transformedAlerts: IAlert[] = [];
                 const objectKeyMap = new Map<string, string>();
 
                 notificationArray.forEach((notif: any, index: number) => {
                     const id = notif.id || notif.notificationId || `alert-${index}`;
-                    const category = notif.category || notif.type || `category-${index}`; //Here it show the index, not the category name.
+                    
+                    let category = notif.category || notif.type || notif.categoryName || notif.alertType || notif.criteria;
+                    
+                    if (!category || category === '') {
+                        category = 'General';
+                        console.warn(`Notification ${id} has no category, using 'General'`);
+                    }
+                    
                     const message = notif.message || notif.description || notif.title || 'No message';
                     
                     let severity: 'Critical' | 'High' | 'Medium' | 'Low' = 'Medium';
@@ -158,9 +187,6 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
                         objectKeyMap.set(alert.id, notif.objectKey);
                     }
                 });
-
-                console.log("Transformed Alerts:", transformedAlerts);
-                console.log("Object Keys Map:", objectKeyMap);
 
                 setAlerts(transformedAlerts);
                 setAlertObjectKeys(objectKeyMap);
@@ -203,38 +229,21 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
             .sort((a, b) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime());
         const categoryNewCount = categoryAlerts.filter(a => a.status === 'New').length;
 
+        let categoryIcon = 'fas fa-info-circle';
+        if (criteriaData?.categories) {
+            const criteriaCategory = criteriaData.categories.find((c: any) => c.name === category);
+            if (criteriaCategory?.icon) {
+                categoryIcon = criteriaCategory.icon;
+            }
+        }
+
         return {
             id: category,
             label: (
                 <span>
-                {(() => {
-                    
-                    if (criteriaData?.categories) {
-                        const criteriaCategory = criteriaData.categories.find((c: any) => c.name === category);
-                        if (criteriaCategory?.icon) {
-                            return <i className={`category-icon ${criteriaCategory.icon}`}></i>;
-                        }
-                    }
-                    
-                    
-                    const icons: { [key: string]: string } = {
-                        'Fire Alarm': 'fas fa-fire', 
-                        'Work Order': 'fas fa-wrench', 
-                        'Elevator': 'fas fa-elevator', 
-                        'Power': 'fas fa-bolt',
-                        'Security': 'fas fa-lock', 
-                        'Energy': 'fas fa-battery-full', 
-                        'HVAC': 'fas fa-snowflake', 
-                        'General': 'fas fa-info-circle',
-                        'Maintenance': 'fas fa-tools', 
-                        'Safety': 'fas fa-exclamation-triangle'
-                    };
-                    
-                    const iconClass = icons[category] || 'fas fa-info-circle';
-                    return <i className={`category-icon ${iconClass}`}></i>;
-                })()} {category}
-                {categoryNewCount > 0 && <span className="tab-badge">{categoryNewCount}</span>}
-            </span>
+                    {' '}{category}
+                    {categoryNewCount > 0 && <span className="tab-badge">{categoryNewCount}</span>}
+                </span>
             ),
             content: (
                 <div className="alerts-tab-content">
@@ -378,8 +387,124 @@ const AlertsWidget: React.FunctionComponent<IWidgetProps> = (props) => {
     );
 };
 
+/**
+ * Register as a Widget
+ */
 registerWidget({
     id: "Alerts",
     widget: AlertsWidget,
-    configs: { layout: {} }
+    configs: {
+        layout: {
+            // w: 12,
+            // h: 12,
+            // minH: 12,
+            // minW: 12
+        }
+    }
 });
+
+/**
+ * Register as a Sidebar Link
+ */
+/*
+registerLink({
+    id: "Alerts",
+    label: "Alerts",
+    // click: () => alert("Hello"),
+    component: AlertsWidget
+});
+*/
+
+/**
+ * Register as a UI
+ */
+
+/*
+registerUI({
+   id:"Alerts",
+   component: AlertsWidget
+});
+*/
+
+
+/**
+ * Register as a Widget template
+ * This will enable this widget to be edited through the designer
+ */
+
+/**
+registerCustomWidgetTemplate({
+    id: "Alerts", // use all lowercase letters
+    name: 'Alerts',
+    description: 'Tempalte Description',
+    template: AlertsWidget,
+    moduleId: BundleConfig.id,
+    complexity: 'advanced',
+    icon: ['fas', 'list'],
+    expectedSchema: 'dictionary-array'
+});
+*/
+
+
+/**
+ * Enable localization
+ *
+ * This will enable the localization
+ *
+ * you can use uxpContext.$L() function
+ *
+ * Ex: Assume you  have a localization message in localization json
+ *
+ * ```
+ * // localization.json
+ *
+ * {
+ *      "uxp.my-widget.title": {
+ *          "en": "This is my widget" // english translation,
+ *          "ar": "<arabic tranlation >",
+ *          ... here goes other translations
+ *      }
+ * }
+ *
+ * ```
+ *
+ *
+ * thne in your widget
+ *
+ * ```
+ * // your widget
+ *
+ * return <WidgetWrapper>
+ *      <div class='title'>
+ *          {props.uxpContext.$L('uxp.my-widget.title')}
+ *      </div>
+ *  </WidgetWrapper>
+ *
+ * ```
+ *
+ * /// you can have parameters as well
+ * // we use `$` mark to identify params
+ * // Ex: $name, $location
+ *
+ * ```
+ * // localization.json
+ *
+ * {
+ *      ...
+ *      "uxp.my-widget.user-welcom-msg":{
+ *          "en": "$userName welcome to my widget"
+ *      }
+ * }
+ * ```
+ *
+ * in widget
+ *
+ * ```
+ *      ...
+ *      <div> {props.uxpContext.$L('uxp.my-widget.user-welcom-msg', {userName: "Jane Doe"})} </div>
+ * ```
+ *
+ *
+ */
+
+// enableLocalization()
